@@ -12,7 +12,7 @@ I also recommend a dedicated fill light LED of some sort. I use 20 neopixels mou
 
 1. Install dependencies. If `klippy-env` is in your home folder (standard for kiauh installations), you'll need to run:
 ```
-source ~klippy-env/bin/activate
+source ~/klippy-env/bin/activate
 pip install opencv-python-headless numpy requests
 
 ```
