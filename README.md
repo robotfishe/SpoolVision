@@ -10,16 +10,17 @@ I also recommend a dedicated fill light LED of some sort. I use 20 neopixels mou
 
 # Setup
 
-1. Install dependencies. If `klippy-env` is in your home folder (standard for kiauh installations), you'll need to run:
+## 1. Install dependencies.
+If `klippy-env` is in your home folder (standard for kiauh installations), you'll need to run:
 ```
 source ~/klippy-env/bin/activate
 pip install opencv-python-headless numpy requests
-
 ```
 
-2. Download the spool_vision.py file and put it in `klipper/klippy/extras/`
+## 2. Download the spool_vision.py file and put it in `klipper/klippy/extras/`
 
-3. Make sure your camera is set up in crowsnest.conf. For example:
+## 3. Make sure your camera is set up in crowsnest.conf.
+For example:
 ```
 [cam 2]
 mode: ustreamer
@@ -32,14 +33,14 @@ v4l2ctl: white_balance_temperature_auto=0,white_balance_temperature=5500,gamma=1
 Tune white balance, hue, gamma, etc in your v4l2ctl parameters until the webcam image is as close as possible to a true representation of the filament colours.
 Do not leave these on auto; _repeatable_ colour accuracy is important!
 
-4. Load a snapshot from the camera into your image editor of choice and measure out a box for the filament on each spool.
+## 4. Load a snapshot from the camera into your image editor of choice and measure out a box for the filament on each spool.
 
 For example, in the screenshot below, the crop area for the spool on the right starts at x=1100, y=20, and has a width of 80 and height of 70 pixels.
 Avoid any areas with harsh reflections, and remember that as filament is used up some areas of the image will show the spool instead of the filament.
 
 <img src="/example_crop.png" height=200 />
 
-5. Add spool_vision sections to your printer config, one for each lane.
+## 5. Add spool_vision sections to your printer config, one for each lane.
 
 Because my camera is mounted on the back of my MMU, the lane order is reversed, so the crop area shown in the image above is lane 1. Therefore I would configure as follows:
 ```
@@ -50,7 +51,7 @@ area: 1100, 20, 80, 70     # top left point, top right point, width, and height 
 ```
 Lane names should follow the format of your MMU plugin of choice: "lane1", "lane2", etc for AFC; "1", "2", etc for Happy Hare.
 
-6. Add "GET_SPOOL_COLOR LANE={}" to your lane load macro.
+## 6. Add "GET_SPOOL_COLOR LANE={}" to your lane load macro.
 
 In Happy Hare there are several ways to do this, the simplest is probably to add it to your mmu_software.cfg:
 ```
