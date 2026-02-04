@@ -1,6 +1,6 @@
 This Klipper plugin pulls an image from a webcam attached to your MMU and sets filament colours in either AFC or Happy Hare.
 
-# Hardware:
+# Hardware
 
 You will need a camera with a good view of all your spools and decent lighting conditions. I recommend [this camera](https://www.aliexpress.com/item/1005004587961991.html) from GXIVISION on AliExpress. It has two sensors which are merged into one image, giving you a wide field view with low distortion that only takes up one USB device's bandwidth.
 
