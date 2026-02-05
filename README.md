@@ -61,9 +61,20 @@ gcode:
     {% set gate = params.GATE|default(-1)|int %}
     GET_SPOOL_COLOR LANE={gate}
 ```
-AFC doesn't expose its macros in the same way but I have recently opened a pull request to create an optional AFC_POST_PREP macro that is called after a spool is loaded, so hopefully you will be able to do this soon.
+AFC doesn't expose its macros in the same way but I have recently opened a pull request to create an optional AFC_POST_PREP macro that is called after a spool is loaded, so hopefully you will be able to do this soon. For AFC, the simplest version is something like:
+```
+[gcode_macro AFC_POST_PREP]
+gcode:
+    {% set lane = params.LANE|default(-1)|int %}
+    GET_SPOOL_COLOR LANE={lane}
+```
+## 7. Further tweaks and advanced macro commands
 
-It's also a good idea to put a command in this macro to activate your fill light and wait a few seconds for the camera's brightness to stabilise before calling SpoolVision. To make this process faster, you may want to use a gcode shell command to pass manual exposure parameters to the camera. For reference, here is my AFC_POST_PREP macro and the other commands it calls:
+You will probably want to activate your fill light automatically before GET_SPOOL_COLOR is called, and wait a few seconds for the camera's brightness to stabilise before calling SpoolVision. Since you don't want to lock up all your other Klipper processes, you will need to use a delayed_gcode command to do any waiting.
+
+You may also want to use a gcode shell command to pass manual exposure parameters to the camera, which will help with repeatability and reduce the delay you need between the lights going on and the colour vision script being run.
+
+For reference, here is my AFC_POST_PREP macro and the other commands it calls:
 
 ```
 [gcode_macro AFC_POST_PREP]
