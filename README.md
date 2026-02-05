@@ -61,7 +61,39 @@ gcode:
     {% set gate = params.GATE|default(-1)|int %}
     GET_SPOOL_COLOR LANE={gate}
 ```
+AFC doesn't expose its macros in the same way but I have recently opened a pull request to create an optional AFC_POST_PREP macro that is called after a spool is loaded, so hopefully you will be able to do this soon.
 
-AFC doesn't expose its macros in the same way so I've opened a feature request with the Armored Turtle team for something to hook into - stay tuned.
+It's also a good idea to put a command in this macro to activate your fill light and wait a few seconds for the camera's brightness to stabilise before calling SpoolVision. To make this process faster, you may want to use a gcode shell command to pass manual exposure parameters to the camera. For reference, here is my AFC_POST_PREP macro and the other commands it calls:
 
-It's also a good idea to put a command in this macro to activate your fill light and wait a few seconds for the camera's brightness to stabilise before calling SpoolVision.
+```
+[gcode_macro AFC_POST_PREP]
+gcode:
+  {% set lane_name = params.LANE|default("lane1")|string %}
+  { action_respond_info("Setting SPOOL_VISION_VARS" ~ lane_name) }
+  SET_GCODE_VARIABLE MACRO=__SPOOL_VISION_VARS VARIABLE=current_lane VALUE="'{lane_name}'"
+  RUN_SHELL_COMMAND CMD=manual_exposure
+  SET_LED LED=spool_vision RED=1 GREEN=1 BLUE=1
+  RESET_LANE_MATERIAL LANE={lane_name}
+  UPDATE_DELAYED_GCODE ID=__RUN_SPOOL_VISION DURATION=1
+
+[delayed_gcode __RUN_SPOOL_VISION]
+gcode:
+  {% set parameters = printer['gcode_macro __SPOOL_VISION_VARS'] %}
+  GET_SPOOL_COLOR LANE={parameters['current_lane']}
+  UPDATE_DELAYED_GCODE ID=__SPOOL_VISION_LIGHTS_OFF DURATION=10
+
+[delayed_gcode __SPOOL_VISION_LIGHTS_OFF]
+gcode:
+  SET_LED LED=spool_vision RED=0 GREEN=0 BLUE=0
+  RUN_SHELL_COMMAND CMD=auto_exposure
+
+[gcode_macro __SPOOL_VISION_VARS]
+variable_current_lane: "lane1"
+gcode:
+
+[gcode_shell_command auto_exposure]
+command: v4l2-ctl --device /dev/v4l/by-id/usb-VNV_USB_Camera-video-index0 --set-ctrl=exposure_auto=3
+
+[gcode_shell_command manual_exposure]
+command: v4l2-ctl --device /dev/v4l/by-id/usb-VNV_USB_Camera-video-index0 --set-ctrl=exposure_auto=1,exposure_absolute=500,gain=0
+```
