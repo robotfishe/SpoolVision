@@ -1,4 +1,4 @@
-This Klipper plugin pulls an image from a webcam attached to your MMU and sets filament colours in either AFC or Happy Hare.
+This Klipper plugin pulls an image from a webcam attached to your MMU and sets filament colours in either AFC or Happy Hare. It pairs nicely with my [MaterialSelector](https://github.com/robotfishe/MaterialSelector) plugin that lets you set material types with physical switches, but can be used independently.
 
 # Hardware
 
